@@ -7,7 +7,7 @@ const admin = {
         if (this.token) {
             document.getElementById('auth-section').style.display = 'none';
             document.getElementById('editor-section').style.display = 'block';
-            document.getElementById('eDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('eDatum').value = new Date().toISOString().split('T')[0];
             this.fetchList();
         }
     },
@@ -43,56 +43,64 @@ const admin = {
             const data = await this.request('entries');
             this.files = data.filter(f => f.name.endsWith('.md')).reverse();
             const select = document.getElementById('fileSelect');
-            select.innerHTML = `<option value="new">+ Nytt inlägg</option>` + 
+            select.innerHTML = `<option value="new">+ Skapa nytt inlägg</option>` + 
                 this.files.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
-        } catch (e) { this.setStatus("Kunde inte ladda filerna. Token kan vara ogiltig.", true); }
+        } catch (e) { this.setStatus("Kunde inte ladda filerna. Nyckeln kan vara ogiltig.", true); }
     },
 
     async loadFile() {
         const filename = document.getElementById('fileSelect').value;
         if(filename === 'new') {
-            document.getElementById('eDate').value = new Date().toISOString().split('T')[0];
-            document.getElementById('eTags').value = '';
-            document.getElementById('eMood').value = '';
+            document.getElementById('eDatum').value = new Date().toISOString().split('T')[0];
+            document.getElementById('eTitel').value = '';
+            document.getElementById('eKansla').value = '';
             document.getElementById('eBody').value = '';
             document.getElementById('deleteBtn').style.display = 'none';
             this.currentSha = null;
             return;
         }
 
-        this.setStatus("Laddar...");
+        this.setStatus("Laddar dokument...");
         const data = await this.request(`entries/${filename}`);
         this.currentSha = data.sha;
         const raw = this.decodeB64(data.content);
         
         const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+        
+        // Återställ fält innan vi fyller på
+        document.getElementById('eTitel').value = '';
+        document.getElementById('eKansla').value = '';
+        
         if(match) {
             document.getElementById('eBody').value = match[2].trim();
             const meta = match[1].split('\n');
             meta.forEach(line => {
                 const [k, ...v] = line.split(':');
-                if(k.trim() === 'tags') document.getElementById('eTags').value = v.join(':').trim();
-                if(k.trim() === 'mood') document.getElementById('eMood').value = v.join(':').trim();
+                const key = k.trim().toLowerCase();
+                const val = v.join(':').trim();
+                
+                if(key === 'titel') document.getElementById('eTitel').value = val;
+                if(key === 'känsla' || key === 'mood') document.getElementById('eKansla').value = val;
             });
-            document.getElementById('eDate').value = filename.replace('.md', '');
+            document.getElementById('eDatum').value = filename.replace('.md', '');
         } else {
             document.getElementById('eBody').value = raw;
         }
         document.getElementById('deleteBtn').style.display = 'block';
-        this.setStatus("Laddat.");
+        this.setStatus("Dokument laddat.");
     },
 
     async saveFile() {
-        this.setStatus("Sparar...");
+        this.setStatus("Sparar till arkivet...");
         document.getElementById('saveBtn').disabled = true;
 
-        const date = document.getElementById('eDate').value;
-        const tags = document.getElementById('eTags').value;
-        const mood = document.getElementById('eMood').value;
+        const datum = document.getElementById('eDatum').value;
+        const titel = document.getElementById('eTitel').value || datum; // Fallback till datum om titel är tom
+        const kansla = document.getElementById('eKansla').value;
         const body = document.getElementById('eBody').value;
         
-        const content = `---\ndate: ${date}\ntags: ${tags}\nmood: ${mood}\n---\n\n${body}`;
-        const path = `entries/${date}.md`;
+        const content = `---\ntitel: ${titel}\ndatum: ${datum}\nkänsla: ${kansla}\n---\n\n${body}`;
+        const path = `entries/${datum}.md`;
 
         if(!this.currentSha) {
             const existing = await this.request(path);
@@ -100,7 +108,7 @@ const admin = {
         }
 
         const payload = {
-            message: `Dagboksinlägg: ${date}`,
+            message: `Sparade inlägg: ${titel}`,
             content: this.encodeB64(content),
             branch: CONFIG.branch
         };
@@ -108,32 +116,35 @@ const admin = {
 
         try {
             await this.request(path, 'PUT', payload);
-            this.setStatus("Sparat!");
-            setTimeout(() => location.reload(), 1000);
+            this.setStatus("Inlägget är sparat!");
+            setTimeout(() => location.reload(), 1500);
         } catch (e) {
-            this.setStatus("Ett fel uppstod när filen skulle sparas.", true);
+            this.setStatus("Ett fel uppstod. Kontrollera behörigheter på din token.", true);
+            document.getElementById('saveBtn').disabled = false;
         }
     },
 
     async deleteFile() {
-        if(!confirm("Är du säker på att du vill radera detta inlägg?")) return;
+        if(!confirm("Är du säker på att du vill radera detta inlägg för alltid?")) return;
         this.setStatus("Raderar...");
-        const date = document.getElementById('eDate').value;
+        const datum = document.getElementById('eDatum').value;
         try {
-            await this.request(`entries/${date}.md`, 'DELETE', {
-                message: `Raderade inlägg ${date}`,
+            await this.request(`entries/${datum}.md`, 'DELETE', {
+                message: `Raderade inlägg ${datum}`,
                 sha: this.currentSha,
                 branch: CONFIG.branch
             });
-            this.setStatus("Raderat!");
-            setTimeout(() => location.reload(), 1000);
-        } catch(e) { this.setStatus("Kunde inte radera.", true); }
+            this.setStatus("Inlägget raderat.");
+            setTimeout(() => location.reload(), 1500);
+        } catch(e) { 
+            this.setStatus("Kunde inte radera inlägget.", true); 
+        }
     },
 
     setStatus(msg, isError=false) {
         const s = document.getElementById('status');
         s.innerText = msg;
-        s.style.color = isError ? '#8B0000' : 'var(--meta-color)';
+        s.style.color = isError ? 'var(--highlight-color)' : 'var(--meta-color)';
     }
 };
 
