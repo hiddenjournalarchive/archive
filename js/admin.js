@@ -35,7 +35,6 @@ const admin = {
         return res.status === 404 ? null : await res.json();
     },
 
-    // Handle UTF-8 encoding properly for Base64 (so emojis and accents work)
     encodeB64(str) { return btoa(unescape(encodeURIComponent(str))); },
     decodeB64(str) { return decodeURIComponent(escape(atob(str))); },
 
@@ -44,9 +43,9 @@ const admin = {
             const data = await this.request('entries');
             this.files = data.filter(f => f.name.endsWith('.md')).reverse();
             const select = document.getElementById('fileSelect');
-            select.innerHTML = `<option value="new">+ New Entry</option>` + 
+            select.innerHTML = `<option value="new">+ Nytt inlägg</option>` + 
                 this.files.map(f => `<option value="${f.name}">${f.name}</option>`).join('');
-        } catch (e) { this.setStatus("Failed to load files. Token might be invalid.", true); }
+        } catch (e) { this.setStatus("Kunde inte ladda filerna. Token kan vara ogiltig.", true); }
     },
 
     async loadFile() {
@@ -61,7 +60,7 @@ const admin = {
             return;
         }
 
-        this.setStatus("Loading...");
+        this.setStatus("Laddar...");
         const data = await this.request(`entries/${filename}`);
         this.currentSha = data.sha;
         const raw = this.decodeB64(data.content);
@@ -80,11 +79,11 @@ const admin = {
             document.getElementById('eBody').value = raw;
         }
         document.getElementById('deleteBtn').style.display = 'block';
-        this.setStatus("Loaded.");
+        this.setStatus("Laddat.");
     },
 
     async saveFile() {
-        this.setStatus("Saving...");
+        this.setStatus("Sparar...");
         document.getElementById('saveBtn').disabled = true;
 
         const date = document.getElementById('eDate').value;
@@ -95,14 +94,13 @@ const admin = {
         const content = `---\ndate: ${date}\ntags: ${tags}\nmood: ${mood}\n---\n\n${body}`;
         const path = `entries/${date}.md`;
 
-        // Check if file exists to get SHA (if overwriting a new file)
         if(!this.currentSha) {
             const existing = await this.request(path);
             if(existing) this.currentSha = existing.sha;
         }
 
         const payload = {
-            message: `Journal entry: ${date}`,
+            message: `Dagboksinlägg: ${date}`,
             content: this.encodeB64(content),
             branch: CONFIG.branch
         };
@@ -110,32 +108,32 @@ const admin = {
 
         try {
             await this.request(path, 'PUT', payload);
-            this.setStatus("Saved successfully!");
+            this.setStatus("Sparat!");
             setTimeout(() => location.reload(), 1000);
         } catch (e) {
-            this.setStatus("Error saving file.", true);
+            this.setStatus("Ett fel uppstod när filen skulle sparas.", true);
         }
     },
 
     async deleteFile() {
-        if(!confirm("Are you sure you want to delete this entry?")) return;
-        this.setStatus("Deleting...");
+        if(!confirm("Är du säker på att du vill radera detta inlägg?")) return;
+        this.setStatus("Raderar...");
         const date = document.getElementById('eDate').value;
         try {
             await this.request(`entries/${date}.md`, 'DELETE', {
-                message: `Delete entry ${date}`,
+                message: `Raderade inlägg ${date}`,
                 sha: this.currentSha,
                 branch: CONFIG.branch
             });
-            this.setStatus("Deleted!");
+            this.setStatus("Raderat!");
             setTimeout(() => location.reload(), 1000);
-        } catch(e) { this.setStatus("Error deleting.", true); }
+        } catch(e) { this.setStatus("Kunde inte radera.", true); }
     },
 
     setStatus(msg, isError=false) {
         const s = document.getElementById('status');
         s.innerText = msg;
-        s.style.color = isError ? 'red' : 'var(--meta-color)';
+        s.style.color = isError ? '#8B0000' : 'var(--meta-color)';
     }
 };
 
