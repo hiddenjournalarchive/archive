@@ -2,31 +2,27 @@ const app = {
     entries: [],
     
     async init() {
-        // Load theme
         if(localStorage.getItem('theme') === 'dark') document.body.setAttribute('data-theme', 'dark');
         
         try {
-            // 1. Fetch list of files from GitHub API (Public read)
             const res = await fetch(`https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/entries`);
             const files = await res.json();
             
-            // 2. Fetch the actual content of each markdown file
             const fetchPromises = files.filter(f => f.name.endsWith('.md')).map(f => 
                 fetch(`entries/${f.name}`).then(r => r.text()).then(text => this.parseMD(f.name, text))
             );
             
             this.entries = await Promise.all(fetchPromises);
-            this.entries.sort((a, b) => new Date(b.meta.date) - new Date(a.meta.date)); // Newest first
+            this.entries.sort((a, b) => new Date(b.meta.date) - new Date(a.meta.date));
             
             this.buildSidebar();
             this.renderHome();
         } catch (err) {
-            document.getElementById('content').innerHTML = `<p class="mono">Error loading archive. Are repo details correct?</p>`;
+            document.getElementById('content').innerHTML = `<p class="mono">Kunde inte ladda arkivet. Kontrollera inställningarna i config.js.</p>`;
         }
     },
 
     parseMD(filename, raw) {
-        // Extract frontmatter
         const match = raw.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
         let meta = { date: filename.replace('.md', ''), tags: '', mood: '' };
         let content = raw;
@@ -48,7 +44,7 @@ const app = {
         });
 
         document.getElementById('tagsList').innerHTML = Array.from(tags).map(t => 
-            `<li onclick="app.filterByTag('${t}')">#${t}</li>`
+            `<li onclick="app.filterByTag('${t}')">${t}</li>`
         ).join('');
 
         document.getElementById('calendarList').innerHTML = this.entries.map(e => 
@@ -57,9 +53,9 @@ const app = {
     },
 
     renderHome() {
-        let html = `<h1>Recent Entries</h1>`;
+        let html = `<h1 class="mono">Senaste inläggen</h1>`;
         this.entries.forEach(e => {
-            html += `<div style="margin-bottom: 2rem; cursor: pointer;" onclick="app.renderEntry('${e.filename}')">
+            html += `<div style="margin-bottom: 2rem; cursor: pointer; border-bottom: 1px dashed var(--border-color); padding-bottom: 1rem;" onclick="app.renderEntry('${e.filename}')">
                 <p class="mono" style="color: var(--meta-color); margin-bottom: 0.5rem;">${e.meta.date}</p>
                 <div style="max-height: 100px; overflow: hidden; opacity: 0.8;">${marked.parse(e.content.substring(0, 150))}...</div>
             </div>`;
@@ -73,14 +69,14 @@ const app = {
         
         let html = `
             <div class="entry-meta mono">
-                <span>📅 ${entry.meta.date}</span>
-                ${entry.meta.mood ? `<span>mood: ${entry.meta.mood}</span>` : ''}
-                ${entry.meta.tags ? `<span>tags: ${entry.meta.tags}</span>` : ''}
+                <span>${entry.meta.date}</span>
+                ${entry.meta.mood ? `<span>känsla: ${entry.meta.mood}</span>` : ''}
+                ${entry.meta.tags ? `<span>taggar: ${entry.meta.tags}</span>` : ''}
             </div>
             <div class="entry-body">${marked.parse(entry.content)}</div>
-            <div style="margin-top: 4rem; display: flex; justify-content: space-between; border-top: 1px solid var(--border-color); padding-top: 1rem;">
-                ${index < this.entries.length - 1 ? `<button onclick="app.renderEntry('${this.entries[index+1].filename}')">← Previous</button>` : '<div></div>'}
-                ${index > 0 ? `<button onclick="app.renderEntry('${this.entries[index-1].filename}')">Next →</button>` : '<div></div>'}
+            <div style="margin-top: 4rem; display: flex; justify-content: space-between; border-top: 1px dashed var(--border-color); padding-top: 2rem;">
+                ${index < this.entries.length - 1 ? `<button onclick="app.renderEntry('${this.entries[index+1].filename}')">< Föregående</button>` : '<div></div>'}
+                ${index > 0 ? `<button onclick="app.renderEntry('${this.entries[index-1].filename}')">Nästa ></button>` : '<div></div>'}
             </div>
         `;
         document.getElementById('content').innerHTML = html;
@@ -91,9 +87,9 @@ const app = {
         const filtered = this.entries.filter(e => 
             e.content.toLowerCase().includes(query) || e.meta.tags.toLowerCase().includes(query)
         );
-        let html = `<h1>Search Results</h1>`;
+        let html = `<h1 class="mono">Sökresultat</h1>`;
         filtered.forEach(e => {
-            html += `<p class="mono" style="cursor:pointer;" onclick="app.renderEntry('${e.filename}')">${e.meta.date} - Read entry...</p>`;
+            html += `<p class="mono" style="cursor:pointer;" onclick="app.renderEntry('${e.filename}')">${e.meta.date} - Läs inlägg...</p>`;
         });
         document.getElementById('content').innerHTML = html;
     },
