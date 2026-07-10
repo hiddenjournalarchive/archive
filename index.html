@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digitalt Arkiv</title>
+    <title>Arkiv</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -12,21 +12,17 @@
     <div class="container">
         <aside>
             <div class="logo mono" onclick="app.renderHome()">Arkiv.</div>
-            <input type="text" id="searchInput" class="mono" placeholder="Sök inlägg..." oninput="app.search()">
+            
+            <input type="text" id="searchInput" class="mono" placeholder="Sök titel eller text..." oninput="app.search()">
             
             <div class="nav-section">
                 <h3 class="mono">Kalender</h3>
                 <ul class="nav-list mono" id="calendarList"></ul>
             </div>
-
-            <div class="nav-section">
-                <h3 class="mono">Taggar</h3>
-                <ul class="nav-list mono" id="tagsList"></ul>
-            </div>
         </aside>
         
         <main id="content">
-            <p class="mono">Laddar arkiv...</p>
+            <p class="mono">Laddar arkivet...</p>
         </main>
     </div>
 
