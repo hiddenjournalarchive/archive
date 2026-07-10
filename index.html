@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Archive</title>
+    <title>Digitalt Arkiv</title>
     <link rel="stylesheet" href="css/style.css">
-    <!-- Lightweight Markdown parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()">◑</button>
+    <button class="theme-toggle mono" onclick="toggleTheme()">[ BYT TEMA ]</button>
     <div class="container">
         <aside>
-            <div class="logo mono" onclick="app.renderHome()">Archive.</div>
-            <input type="text" id="searchInput" class="mono" placeholder="Search entries..." oninput="app.search()">
+            <div class="logo mono" onclick="app.renderHome()">Arkiv.</div>
+            <input type="text" id="searchInput" class="mono" placeholder="Sök inlägg..." oninput="app.search()">
             
             <div class="nav-section">
-                <h3 class="mono">Calendar</h3>
+                <h3 class="mono">Kalender</h3>
                 <ul class="nav-list mono" id="calendarList"></ul>
             </div>
 
             <div class="nav-section">
-                <h3 class="mono">Tags</h3>
+                <h3 class="mono">Taggar</h3>
                 <ul class="nav-list mono" id="tagsList"></ul>
             </div>
         </aside>
         
         <main id="content">
-            <!-- Content injected here via JS -->
-            <p class="mono">Loading archive...</p>
+            <p class="mono">Laddar arkiv...</p>
         </main>
     </div>
 
