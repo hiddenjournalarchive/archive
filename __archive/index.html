@@ -1,44 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Archive Admin</title>
+    <title>Arkiv Admin</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        .admin-panel { max-width: 800px; margin: 4rem auto; padding: 2rem; background: var(--paper-color); border: 1px solid var(--border-color); border-radius: 4px; }
+        .admin-panel { max-width: 800px; margin: 4rem auto; padding: 2rem; background: var(--paper-color); border: 1px solid var(--border-color); box-shadow: 4px 4px 0px var(--border-color); }
         .flex { display: flex; gap: 1rem; }
         textarea { height: 400px; resize: vertical; }
-        .danger { border-color: red; color: red; }
-        .danger:hover { background: red; color: white; }
+        .danger { border-color: #8B0000; color: #8B0000; box-shadow: 2px 2px 0px #8B0000; }
+        .danger:active { box-shadow: 0px 0px 0px transparent; transform: translate(2px, 2px); }
+        .danger:hover { background: #8B0000; color: white; }
         #auth-section { text-align: center; padding: 4rem 0; }
     </style>
 </head>
 <body>
     <div class="admin-panel">
-        <h1 class="mono">Writer's Desk.</h1>
+        <h1 class="mono">Skrivbordet.</h1>
         
         <div id="auth-section">
-            <p>Enter your GitHub Personal Access Token to unlock.</p>
+            <p class="mono" style="margin-bottom: 1rem;">Ange din GitHub Personal Access Token för att logga in.</p>
             <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
-            <button onclick="admin.login()">Unlock</button>
+            <button onclick="admin.login()">Lås upp</button>
         </div>
 
         <div id="editor-section" style="display: none;">
             <div class="flex" style="margin-bottom: 2rem;">
-                <select id="fileSelect" onchange="admin.loadFile()"><option value="new">+ New Entry</option></select>
-                <button onclick="admin.logout()">Lock Desk</button>
+                <select id="fileSelect" onchange="admin.loadFile()"><option value="new">+ Nytt inlägg</option></select>
+                <button onclick="admin.logout()">Lås Skrivbord</button>
             </div>
 
             <div class="flex">
                 <input type="date" id="eDate">
-                <input type="text" id="eTags" placeholder="Tags (comma separated)">
-                <input type="text" id="eMood" placeholder="Mood">
+                <input type="text" id="eTags" placeholder="Taggar (separerade med komma)">
+                <input type="text" id="eMood" placeholder="Känsla">
             </div>
-            <textarea id="eBody" placeholder="Start writing in markdown..."></textarea>
+            <textarea id="eBody" placeholder="Börja skriva i markdown..."></textarea>
             
             <div class="flex" style="justify-content: space-between;">
-                <button onclick="admin.saveFile()" id="saveBtn">Save Entry</button>
-                <button onclick="admin.deleteFile()" class="danger" id="deleteBtn" style="display:none;">Delete Entry</button>
+                <button onclick="admin.saveFile()" id="saveBtn">Spara inlägg</button>
+                <button onclick="admin.deleteFile()" class="danger" id="deleteBtn" style="display:none;">Radera inlägg</button>
             </div>
             <p id="status" class="mono" style="margin-top: 1rem;"></p>
         </div>
