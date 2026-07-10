@@ -2,46 +2,47 @@
 <html lang="sv">
 <head>
     <meta charset="UTF-8">
-    <title>Arkiv Admin</title>
+    <title>Skrivbordet</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        .admin-panel { max-width: 800px; margin: 4rem auto; padding: 2rem; background: var(--paper-color); border: 1px solid var(--border-color); box-shadow: 4px 4px 0px var(--border-color); }
-        .flex { display: flex; gap: 1rem; }
-        textarea { height: 400px; resize: vertical; }
-        .danger { border-color: #8B0000; color: #8B0000; box-shadow: 2px 2px 0px #8B0000; }
-        .danger:active { box-shadow: 0px 0px 0px transparent; transform: translate(2px, 2px); }
-        .danger:hover { background: #8B0000; color: white; }
+        .admin-panel { max-width: 800px; margin: 4rem auto; padding: 3rem; background: var(--paper-color); border: 1px solid var(--border-color); box-shadow: 4px 4px 0px var(--border-color); }
+        .flex { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        textarea { height: 450px; resize: vertical; margin-bottom: 2rem; }
+        .danger { border-color: var(--highlight-color); color: var(--highlight-color); box-shadow: 2px 2px 0px var(--highlight-color); }
+        .danger:hover { background: var(--highlight-color); color: var(--paper-color); }
         #auth-section { text-align: center; padding: 4rem 0; }
     </style>
 </head>
 <body>
     <div class="admin-panel">
-        <h1 class="mono">Skrivbordet.</h1>
+        <h1 class="mono" style="border-bottom: 1px dashed var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem;">Skrivbordet.</h1>
         
         <div id="auth-section">
-            <p class="mono" style="margin-bottom: 1rem;">Ange din GitHub Personal Access Token för att logga in.</p>
-            <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxx">
+            <p class="mono" style="margin-bottom: 1rem;">Ange nyckel för att låsa upp.</p>
+            <input type="password" id="ghToken" placeholder="Klistra in token här...">
             <button onclick="admin.login()">Lås upp</button>
         </div>
 
         <div id="editor-section" style="display: none;">
-            <div class="flex" style="margin-bottom: 2rem;">
-                <select id="fileSelect" onchange="admin.loadFile()"><option value="new">+ Nytt inlägg</option></select>
+            <div class="flex" style="justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem;">
+                <select id="fileSelect" onchange="admin.loadFile()" style="width: auto; margin: 0;"><option value="new">+ Skapa nytt inlägg</option></select>
                 <button onclick="admin.logout()">Lås Skrivbord</button>
             </div>
 
-            <div class="flex">
-                <input type="date" id="eDate">
-                <input type="text" id="eTags" placeholder="Taggar (separerade med komma)">
-                <input type="text" id="eMood" placeholder="Känsla">
-            </div>
-            <textarea id="eBody" placeholder="Börja skriva i markdown..."></textarea>
+            <input type="text" id="eTitel" placeholder="Inläggets titel..." style="font-size: 1.5rem; font-weight: bold; font-family: 'Lora', serif;">
             
-            <div class="flex" style="justify-content: space-between;">
+            <div class="flex">
+                <input type="date" id="eDatum" title="Datum">
+                <input type="text" id="eKansla" placeholder="Känsla (frivilligt)">
+            </div>
+            
+            <textarea id="eBody" placeholder="Börja skriva din text här..."></textarea>
+            
+            <div class="flex" style="justify-content: space-between; margin: 0;">
                 <button onclick="admin.saveFile()" id="saveBtn">Spara inlägg</button>
                 <button onclick="admin.deleteFile()" class="danger" id="deleteBtn" style="display:none;">Radera inlägg</button>
             </div>
-            <p id="status" class="mono" style="margin-top: 1rem;"></p>
+            <p id="status" class="mono" style="margin-top: 1.5rem; text-align: center;"></p>
         </div>
     </div>
 
