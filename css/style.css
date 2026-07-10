@@ -1,24 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
 
 :root {
-    /* Ljust läge - Varmt, minimalt men retro */
     --bg-color: #FDFBF7;
     --paper-color: #F4EFE6;
     --text-color: #3E362E;
     --meta-color: #7A7266;
     --border-color: #A39B8E;
     --accent-color: #8C6A4F;
+    --highlight-color: #8B0000;
     --grid-color: rgba(62, 54, 46, 0.08);
 }
 
 [data-theme="dark"] {
-    /* Mörkt läge */
     --bg-color: #1E1C1A;
     --paper-color: #2A2724;
     --text-color: #E6DED5;
     --meta-color: #9C948A;
     --border-color: #5A554F;
     --accent-color: #B58A66;
+    --highlight-color: #FF6B6B;
     --grid-color: rgba(230, 222, 213, 0.05);
 }
 
@@ -28,16 +28,14 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     font-family: 'Lora', serif;
-    line-height: 1.7;
+    line-height: 1.8;
     transition: background-color 0.4s, color 0.4s;
-    /* Klassiskt 2000-tals rutnät (pixel vibe) */
     background-image: 
         linear-gradient(var(--grid-color) 1px, transparent 1px),
         linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
     background-size: 20px 20px;
 }
 
-/* Pixel-fonten för gränssnittet */
 .mono { 
     font-family: 'DotGothic16', sans-serif; 
     font-size: 1rem; 
@@ -45,41 +43,53 @@ body {
 }
 
 .container {
-    max-width: 900px;
+    max-width: 950px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 3rem 2rem;
     display: grid;
-    grid-template-columns: 250px 1fr;
-    gap: 3rem;
+    grid-template-columns: 220px 1fr;
+    gap: 4rem;
 }
 
-/* Sidofält */
+/* Rengjord navigering */
 aside { border-right: 1px dashed var(--border-color); padding-right: 2rem; }
-.logo { font-size: 1.5rem; font-weight: normal; margin-bottom: 2rem; cursor: pointer; }
-.logo:hover { color: var(--accent-color); }
-.nav-section { margin-bottom: 2rem; }
-.nav-section h3 { font-size: 0.9rem; text-transform: uppercase; color: var(--meta-color); margin-bottom: 1rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.3rem;}
+.logo { font-size: 1.8rem; margin-bottom: 2.5rem; cursor: pointer; text-transform: uppercase; border-bottom: 2px solid var(--text-color); padding-bottom: 0.5rem; }
+.logo:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+.nav-section { margin-top: 2rem; }
+.nav-section h3 { font-size: 0.9rem; text-transform: uppercase; color: var(--meta-color); margin-bottom: 1rem; }
 .nav-list { list-style: none; }
-.nav-list li { margin-bottom: 0.5rem; cursor: pointer; color: var(--meta-color); transition: color 0.1s; }
+.nav-list li { margin-bottom: 0.8rem; cursor: pointer; color: var(--meta-color); transition: color 0.1s; }
 .nav-list li:hover { color: var(--text-color); }
 .nav-list li::before { content: "> "; color: var(--border-color); }
+
+/* Markera det senaste inlägget i kalendern */
+.nav-list li.latest { color: var(--text-color); font-weight: bold; }
+.nav-list li.latest::after { content: " [NYAST]"; color: var(--highlight-color); font-size: 0.8rem; }
 
 /* Huvudinnehåll */
 main { 
     background: var(--paper-color); 
-    padding: 3rem; 
+    padding: 4rem; 
     border: 1px solid var(--border-color); 
-    box-shadow: 4px 4px 0px var(--border-color); /* Hård skugga (retro 8-bit) */
+    box-shadow: 4px 4px 0px var(--border-color); 
     min-height: 80vh; 
 }
 
-.entry-meta { display: flex; gap: 1rem; color: var(--meta-color); margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-.entry-meta span { display: inline-block; background: var(--bg-color); padding: 2px 8px; border: 1px dashed var(--border-color); }
+/* Tydligare typografi för inlägg */
+h1.entry-title { font-weight: normal; font-size: 2.5rem; margin-bottom: 0.5rem; line-height: 1.2; }
+.entry-meta { color: var(--meta-color); margin-bottom: 2.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; font-size: 0.9rem; text-transform: uppercase; }
+.entry-meta span { margin-right: 1.5rem; }
 
-h1 { font-weight: normal; margin-bottom: 1.5rem; font-size: 2rem; }
+.feed-item { margin-bottom: 3rem; cursor: pointer; border-bottom: 1px dashed var(--border-color); padding-bottom: 2rem; }
+.feed-item:hover h2 { color: var(--accent-color); }
+.feed-item h2 { font-size: 1.8rem; font-weight: normal; margin-bottom: 0.5rem; }
+.feed-item .feed-meta { color: var(--meta-color); margin-bottom: 1rem; font-size: 0.9rem; }
+.feed-item .feed-preview { opacity: 0.8; max-height: 80px; overflow: hidden; }
+
 p { margin-bottom: 1.5rem; }
 
-/* Retro knappar & fält */
+/* Formulär & Knappar */
 input, textarea, select {
     width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: var(--bg-color);
     border: 1px solid var(--border-color); color: var(--text-color);
@@ -92,7 +102,7 @@ button {
     border: 1px solid var(--border-color);
     padding: 0.6rem 1.2rem; cursor: pointer; font-family: 'DotGothic16', sans-serif; 
     font-size: 1rem; text-transform: uppercase;
-    box-shadow: 2px 2px 0px var(--border-color); /* Retro knapp-känsla */
+    box-shadow: 2px 2px 0px var(--border-color);
 }
 button:active { box-shadow: 0px 0px 0px transparent; transform: translate(2px, 2px); }
 button:hover { background: var(--bg-color); border-color: var(--text-color); }
@@ -101,7 +111,7 @@ button:hover { background: var(--bg-color); border-color: var(--text-color); }
 .theme-toggle:hover { background: none; color: var(--text-color); transform: none; }
 
 @media (max-width: 768px) {
-    .container { grid-template-columns: 1fr; gap: 1.5rem; }
-    aside { border-right: none; border-bottom: 1px dashed var(--border-color); padding-right: 0; padding-bottom: 1rem; }
-    main { padding: 1.5rem; box-shadow: 2px 2px 0px var(--border-color); }
+    .container { grid-template-columns: 1fr; gap: 2rem; padding: 1.5rem; }
+    aside { border-right: none; border-bottom: 1px dashed var(--border-color); padding-right: 0; padding-bottom: 2rem; }
+    main { padding: 2rem; }
 }
