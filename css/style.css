@@ -1,25 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Space+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Lora:ital,wght@0,400;0,600;1,400&display=swap');
 
 :root {
-    /* Light Mode - Cream, Beige, Warm Gray, Dark Brown */
+    /* Ljust läge - Varmt, minimalt men retro */
     --bg-color: #FDFBF7;
     --paper-color: #F4EFE6;
     --text-color: #3E362E;
     --meta-color: #7A7266;
-    --border-color: #D7CFC3;
+    --border-color: #A39B8E;
     --accent-color: #8C6A4F;
-    --dot-color: rgba(62, 54, 46, 0.05);
+    --grid-color: rgba(62, 54, 46, 0.08);
 }
 
 [data-theme="dark"] {
-    /* Dark Mode */
+    /* Mörkt läge */
     --bg-color: #1E1C1A;
     --paper-color: #2A2724;
     --text-color: #E6DED5;
     --meta-color: #9C948A;
-    --border-color: #3E3A36;
+    --border-color: #5A554F;
     --accent-color: #B58A66;
-    --dot-color: rgba(230, 222, 213, 0.05);
+    --grid-color: rgba(230, 222, 213, 0.05);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,12 +30,19 @@ body {
     font-family: 'Lora', serif;
     line-height: 1.7;
     transition: background-color 0.4s, color 0.4s;
-    /* Subtle pixel/grid influence */
-    background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+    /* Klassiskt 2000-tals rutnät (pixel vibe) */
+    background-image: 
+        linear-gradient(var(--grid-color) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
     background-size: 20px 20px;
 }
 
-.mono { font-family: 'Space Mono', monospace; font-size: 0.85rem; }
+/* Pixel-fonten för gränssnittet */
+.mono { 
+    font-family: 'DotGothic16', sans-serif; 
+    font-size: 1rem; 
+    letter-spacing: 0.5px;
+}
 
 .container {
     max-width: 900px;
@@ -46,39 +53,55 @@ body {
     gap: 3rem;
 }
 
-/* Sidebar / Nav */
-aside { border-right: 1px solid var(--border-color); padding-right: 2rem; }
-.logo { font-size: 1.2rem; font-weight: 600; margin-bottom: 2rem; cursor: pointer; }
+/* Sidofält */
+aside { border-right: 1px dashed var(--border-color); padding-right: 2rem; }
+.logo { font-size: 1.5rem; font-weight: normal; margin-bottom: 2rem; cursor: pointer; }
+.logo:hover { color: var(--accent-color); }
 .nav-section { margin-bottom: 2rem; }
-.nav-section h3 { font-size: 0.8rem; text-transform: uppercase; color: var(--meta-color); margin-bottom: 1rem; letter-spacing: 1px; }
+.nav-section h3 { font-size: 0.9rem; text-transform: uppercase; color: var(--meta-color); margin-bottom: 1rem; border-bottom: 1px dashed var(--border-color); padding-bottom: 0.3rem;}
 .nav-list { list-style: none; }
-.nav-list li { margin-bottom: 0.5rem; cursor: pointer; color: var(--meta-color); transition: color 0.2s; }
-.nav-list li:hover { color: var(--accent-color); }
+.nav-list li { margin-bottom: 0.5rem; cursor: pointer; color: var(--meta-color); transition: color 0.1s; }
+.nav-list li:hover { color: var(--text-color); }
+.nav-list li::before { content: "> "; color: var(--border-color); }
 
-/* Main Content Area */
-main { background: var(--paper-color); padding: 3rem; border-radius: 4px; border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.02); min-height: 80vh; }
+/* Huvudinnehåll */
+main { 
+    background: var(--paper-color); 
+    padding: 3rem; 
+    border: 1px solid var(--border-color); 
+    box-shadow: 4px 4px 0px var(--border-color); /* Hård skugga (retro 8-bit) */
+    min-height: 80vh; 
+}
+
 .entry-meta { display: flex; gap: 1rem; color: var(--meta-color); margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-.entry-meta span { display: inline-block; background: var(--bg-color); padding: 2px 8px; border-radius: 2px; border: 1px solid var(--border-color); }
+.entry-meta span { display: inline-block; background: var(--bg-color); padding: 2px 8px; border: 1px dashed var(--border-color); }
 
-h1 { font-weight: 600; margin-bottom: 1.5rem; font-size: 2rem; }
+h1 { font-weight: normal; margin-bottom: 1.5rem; font-size: 2rem; }
 p { margin-bottom: 1.5rem; }
 
-/* UI Elements */
+/* Retro knappar & fält */
 input, textarea, select {
     width: 100%; padding: 0.8rem; margin-bottom: 1rem; background: var(--bg-color);
-    border: 1px solid var(--border-color); color: var(--text-color); border-radius: 4px;
-    font-family: inherit;
+    border: 1px solid var(--border-color); color: var(--text-color);
+    font-family: 'DotGothic16', sans-serif; font-size: 1rem; outline: none;
 }
-button {
-    background: var(--bg-color); color: var(--text-color); border: 1px solid var(--border-color);
-    padding: 0.6rem 1.2rem; cursor: pointer; border-radius: 4px; font-family: 'Space Mono', monospace; font-size: 0.8rem; transition: all 0.2s;
-}
-button:hover { background: var(--text-color); color: var(--bg-color); }
+input:focus, textarea:focus { border-color: var(--accent-color); }
 
-.theme-toggle { position: fixed; top: 2rem; right: 2rem; background: none; border: none; cursor: pointer; color: var(--meta-color); font-size: 1.2rem; }
+button {
+    background: var(--paper-color); color: var(--text-color); 
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1.2rem; cursor: pointer; font-family: 'DotGothic16', sans-serif; 
+    font-size: 1rem; text-transform: uppercase;
+    box-shadow: 2px 2px 0px var(--border-color); /* Retro knapp-känsla */
+}
+button:active { box-shadow: 0px 0px 0px transparent; transform: translate(2px, 2px); }
+button:hover { background: var(--bg-color); border-color: var(--text-color); }
+
+.theme-toggle { position: fixed; top: 1rem; right: 2rem; background: none; border: none; box-shadow: none; cursor: pointer; color: var(--meta-color); font-size: 1rem; }
+.theme-toggle:hover { background: none; color: var(--text-color); transform: none; }
 
 @media (max-width: 768px) {
     .container { grid-template-columns: 1fr; gap: 1.5rem; }
-    aside { border-right: none; border-bottom: 1px solid var(--border-color); padding-right: 0; padding-bottom: 1rem; }
-    main { padding: 1.5rem; }
+    aside { border-right: none; border-bottom: 1px dashed var(--border-color); padding-right: 0; padding-bottom: 1rem; }
+    main { padding: 1.5rem; box-shadow: 2px 2px 0px var(--border-color); }
 }
